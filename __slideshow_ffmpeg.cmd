@@ -1,0 +1,1 @@
+ffmpeg -r 1/5 -i %%05d.png -c:v libx264 -r 30 -pix_fmt yuv420p -crf 17 output.mp4
