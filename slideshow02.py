@@ -28,38 +28,98 @@ save_gif = False
 audio_file = "Z:/vid/m4a/tmp3.m4a" # Имя файла для добавления аудио
 ffmpeg_cmd = "ffmpeg"
  
-def set_video_size(width,height) :
-    global W,H,SIZE,K_W_H
+def set_video_size(width, height):
+    """
+    Set the video size.
+
+    Args:
+        width (int): The width of the video.
+        height (int): The height of the video.
+    """
+    # Set the width and height of the video
+    global W, H, SIZE, K_W_H
     W = width
     H = height
-    K_W_H = W / H # Коэффициент ширина и высота 1920 / 1080 = 1,77777
-    SIZE = (W, H) # Размер видео
-    print("Video size ",W,H)
+    
+    # Calculate the aspect ratio of the video
+    K_W_H = W / H  # Aspect ratio of 1920 / 1080 = 1.77777
+    
+    # Set the size of the video
+    SIZE = (W, H)  # Size of the video
+    
+    # Print the video size
+    print("Video size: ", W, H)
 
 def intro() :
-    global text_logo, SIZE, fontSizeIntro
-    duration_intro = 2 # Длительность каждого текстового клипа
-    logo1 = (TextClip(txt=text_logo,color="#0000AA", align='West',fontsize=fontSizeIntro,font = 'Arial').set_duration(duration_intro).margin(right=8, top=8, opacity=0).set_pos(("center","center"))) # (optional) logo-border padding.set_pos(("right","top")))
-    logo1_clip = CompositeVideoClip([logo1.fadein(0.5,initial_color=[255,255,255]).fadeout(0.5,final_color=[255,255,255])], size=SIZE, bg_color = [255,255,255])  
-    logo2 = (TextClip(txt="present",color="#0000AA", align='West',fontsize=fontSizeIntro,font = 'Arial').set_duration(duration_intro).margin(right=8, top=8, opacity=0).set_pos(("center","center"))) # (optional) logo-border padding.set_pos(("right","top")))
-    logo2_clip = CompositeVideoClip([logo2.fadein(0.5,initial_color=[255,255,255]).fadeout(0.5,final_color=[255,255,255])], size=SIZE, bg_color = [255,255,255])  
-    return concatenate_videoclips([logo1_clip,logo2_clip])
+    """
+    Create an intro clip with two text clips.
+
+    Returns:
+        CompositeVideoClip: The concatenated intro clip.
+    """
+    # Set the duration of each text clip
+    duration_intro = 2 # Duration of each text clip
+    
+    # Create the first text clip
+    logo1 = (TextClip(txt=text_logo,color="#0000AA", align='West',fontsize=fontSizeIntro,font = 'Arial')  # Create the text clip
+              .set_duration(duration_intro)  # Set the duration
+              .margin(right=8, top=8, opacity=0)  # Set the margin and opacity
+              .set_pos(("center","center")))  # Set the position
+    logo1_clip = CompositeVideoClip([logo1.fadein(0.5,initial_color=[255,255,255]).fadeout(0.5,final_color=[255,255,255])], size=SIZE, bg_color = [255,255,255])  # Add fade-in and fade-out effects
+    
+    # Create the second text clip
+    logo2 = (TextClip(txt="present",color="#0000AA", align='West',fontsize=fontSizeIntro,font = 'Arial')  # Create the text clip
+              .set_duration(duration_intro)  # Set the duration
+              .margin(right=8, top=8, opacity=0)  # Set the margin and opacity
+              .set_pos(("center","center")))  # Set the position
+    logo2_clip = CompositeVideoClip([logo2.fadein(0.5,initial_color=[255,255,255]).fadeout(0.5,final_color=[255,255,255])], size=SIZE, bg_color = [255,255,255])  # Add fade-in and fade-out effects
+    
+    # Concatenate the text clips
+    return concatenate_videoclips([logo1_clip,logo2_clip])  # Return the concatenated clip
   
 def outro() :
-    global text_logo, SIZE, fontSizeIntro
-    duration_intro = 4 # Длительность каждого текстового клипа
-    logo1 = (TextClip(txt=text_logo,color="#0000AA", align='West',fontsize=fontSizeIntro,font = 'Arial').set_duration(duration_intro).margin(right=8, top=8, opacity=0).set_pos(("center","center"))) # (optional) logo-border padding.set_pos(("right","top")))
-    return CompositeVideoClip([logo1.fadein(0.5,initial_color=[255,255,255]).fadeout(0.5,final_color=[255,255,255])], size=SIZE, bg_color = [255,255,255])
+    """
+    Create an outro clip with a single text clip.
+
+    Returns:
+        CompositeVideoClip: The outro clip.
+    """
+    # Set the duration of the text clip
+    duration_intro = 4  # Duration of the text clip
     
-def calc_rotate(t,angle):
-    if (t>1):
+    # Create the text clip
+    logo1 = (TextClip(txt=text_logo,color="#0000AA", align='West',fontsize=fontSizeIntro,font = 'Arial')  # Create the text clip
+              .set_duration(duration_intro)  # Set the duration
+              .margin(right=8, top=8, opacity=0)  # Set the margin and opacity
+              .set_pos(("center","center")))  # Set the position
+    
+    # Add fade-in and fade-out effects
+    return CompositeVideoClip([logo1.fadein(0.5,initial_color=[255,255,255]).fadeout(0.5,final_color=[255,255,255])], size=SIZE, bg_color = [255,255,255])  # Return the outro clip
+    
+def calc_rotate(t, angle):
+    """
+    Calculate the rotational angle based on the given parameters.
+
+    Args:
+        t (float): The time value.
+        angle (float): The initial angle.
+
+    Returns:
+        float: The calculated rotational angle.
+    """
+    # If time value is greater than 1, return 0.
+    if t > 1:
         return 0
-    if angle>0:
-        #print("1 ",angle-(t*angle))
-        return angle-(t*angle)
-    elif angle<0:
-        #print("2 ",angle-(t*angle))
-        return angle-(t*angle)
+    
+    # If the angle is greater than 0, calculate the rotational angle.
+    if angle > 0:
+        return angle - (t * angle)
+    
+    # If the angle is less than 0, calculate the rotational angle.
+    elif angle < 0:
+        return angle - (t * angle)
+    
+    # If the angle is 0, return 0.
     return 0
         
     

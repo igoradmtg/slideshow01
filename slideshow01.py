@@ -28,60 +28,148 @@ save_gif = False
 audio_file = "Z:/vid/m4a/tmp3.m4a" # Имя файла для добавления аудио
 ffmpeg_cmd = "ffmpeg"
  
-def set_video_size(width,height) :
-    global W,H,SIZE,K_W_H
+def set_video_size(width, height):
+    """
+    Set the video size.
+
+    Args:
+        width (int): The width of the video.
+        height (int): The height of the video.
+    """
+    # Set the width and height of the video
+    global W, H, SIZE, K_W_H
     W = width
     H = height
-    K_W_H = W / H # Коэффициент ширина и высота 1920 / 1080 = 1,77777
-    SIZE = (W, H) # Размер видео
-    print("Video size ",W,H)
+    
+    # Calculate the aspect ratio of the video
+    K_W_H = W / H  # Aspect ratio of width / height
+    
+    # Set the size of the video
+    SIZE = (W, H)  # Size of the video
+    
+    # Print the video size
+    print("Video size: {} {}".format(W, H))
 
 def intro() :
-    global text_logo, SIZE, fontSizeIntro
-    duration_intro = 2 # Длительность каждого текстового клипа
-    logo1 = (TextClip(txt=text_logo,color="#0000AA", align='West',fontsize=fontSizeIntro,font = 'Arial').set_duration(duration_intro).margin(right=8, top=8, opacity=0).set_pos(("center","center"))) # (optional) logo-border padding.set_pos(("right","top")))
-    logo1_clip = CompositeVideoClip([logo1.fadein(0.5,initial_color=[255,255,255]).fadeout(0.5,final_color=[255,255,255])], size=SIZE, bg_color = [255,255,255])  
-    logo2 = (TextClip(txt="present",color="#0000AA", align='West',fontsize=fontSizeIntro,font = 'Arial').set_duration(duration_intro).margin(right=8, top=8, opacity=0).set_pos(("center","center"))) # (optional) logo-border padding.set_pos(("right","top")))
-    logo2_clip = CompositeVideoClip([logo2.fadein(0.5,initial_color=[255,255,255]).fadeout(0.5,final_color=[255,255,255])], size=SIZE, bg_color = [255,255,255])  
+    """
+    Create an intro clip with two text clips.
+
+    Returns:
+        CompositeVideoClip: The concatenated intro clip.
+    """
+    # Set the duration of each text clip
+    duration_intro = 2 # Duration of each text clip
+    
+    # Create the first text clip
+    logo1 = (TextClip(txt=text_logo,color="#0000AA", align='West',fontsize=fontSizeIntro,font = 'Arial')  # Create the text clip
+              .set_duration(duration_intro)  # Set the duration
+              .margin(right=8, top=8, opacity=0)  # Set the margin and opacity
+              .set_pos(("center","center")))  # Set the position
+    logo1_clip = CompositeVideoClip([logo1.fadein(0.5,initial_color=[255,255,255]).fadeout(0.5,final_color=[255,255,255])], size=SIZE, bg_color = [255,255,255])  # Add fade-in and fade-out effects
+    
+    # Create the second text clip
+    logo2 = (TextClip(txt="present",color="#0000AA", align='West',fontsize=fontSizeIntro,font = 'Arial')  # Create the text clip
+              .set_duration(duration_intro)  # Set the duration
+              .margin(right=8, top=8, opacity=0)  # Set the margin and opacity
+              .set_pos(("center","center")))  # Set the position
+    logo2_clip = CompositeVideoClip([logo2.fadein(0.5,initial_color=[255,255,255]).fadeout(0.5,final_color=[255,255,255])], size=SIZE, bg_color = [255,255,255])  # Add fade-in and fade-out effects
+    
+    # Concatenate the text clips
     return concatenate_videoclips([logo1_clip,logo2_clip])
   
 def outro() :
-    global text_logo, SIZE, fontSizeIntro
-    duration_intro = 4 # Длительность каждого текстового клипа
-    logo1 = (TextClip(txt=text_logo,color="#0000AA", align='West',fontsize=fontSizeIntro,font = 'Arial').set_duration(duration_intro).margin(right=8, top=8, opacity=0).set_pos(("center","center"))) # (optional) logo-border padding.set_pos(("right","top")))
+    """
+    Create an outro clip with a single text clip.
+
+    Returns:
+        CompositeVideoClip: The outro clip.
+    """
+    # Set the duration of the text clip
+    duration_intro = 4  # Duration of the text clip
+
+    # Create the text clip
+    logo1 = (TextClip(txt=text_logo,color="#0000AA", align='West',fontsize=fontSizeIntro,font = 'Arial')  # Create the text clip
+              .set_duration(duration_intro)  # Set the duration
+              .margin(right=8, top=8, opacity=0)  # Set the margin and opacity
+              .set_pos(("center","center")))  # Set the position
+              
+    # Add fade-in and fade-out effects
     return CompositeVideoClip([logo1.fadein(0.5,initial_color=[255,255,255]).fadeout(0.5,final_color=[255,255,255])], size=SIZE, bg_color = [255,255,255])
     
-def calc_rotate(t,angle):
-    if (t>1):
+def calc_rotate(t, angle):
+    """
+    Calculate the rotational angle based on the given parameters.
+
+    Args:
+        t (float): The time value.
+        angle (float): The initial angle.
+
+    Returns:
+        float: The calculated rotational angle.
+    """
+    # If time value is greater than 1, return 0.
+    if t > 1:
         return 0
-    if angle>0:
-        #print("1 ",angle-(t*angle))
-        return angle-(t*angle)
-    elif angle<0:
-        #print("2 ",angle-(t*angle))
-        return angle-(t*angle)
+    
+    # If the angle is greater than 0, calculate the rotational angle.
+    if angle > 0:
+        # Return the angle minus the product of time and angle.
+        return angle - (t * angle)
+    
+    # If the angle is less than 0, calculate the rotational angle.
+    elif angle < 0:
+        # Return the angle minus the product of time and angle.
+        return angle - (t * angle)
+    
+    # If the angle is 0, return 0.
     return 0
         
     
 
 def calc_resize(t):
-    if (t>1):
+    """
+    Calculate the resize value based on the given time value.
+
+    Args:
+        t (float): The time value.
+
+    Returns:
+        float: The calculated resize value.
+    """
+    # If time value is greater than 1, return 0.125.
+    if (t > 1):
         return 0.125
-    else :
-        return (0.125*2)-(t*0.125)
+    # Otherwise, calculate the resize value.
+    else:
+        # Return the difference between 0.125*2 and the product of t and 0.125.
+        return (0.125 * 2) - (t * 0.125)
     
 def save_clip() :
+    """
+    Save the clip to a file.
+
+    This function saves the clip to a file based on the given parameters.
+    It creates a list of video clips, sorts the file names, calculates the time durations,
+    and appends the image clips to the clip list. If a text file is provided, it appends the
+    text clips to the clip list. If a logo is provided, it appends the logo clip to the clip list.
+    Finally, it saves the final clip to a file.
+    """
     global dir_name, fnamemp4 , SIZE , H, image_duration , ffmpeg_params , file_name_text, text_duration
+    
     clip_list = [] # Video clip
     file_names = [] # Full file names
+    
+    # Get file names and sort them
     names = os.listdir(dir_name)
-    # Sort file names 
     names.sort()
+    
+    # Initialize time durations
     time_start = 0 # Start clip
     time_for_image = image_duration # Time image
     time_video = 0 # Time video
+    
+    # Append image clips to the clip list
     for name in names:
-        #print("File ",name)
         if name.lower().find(".jpg") == -1 :
             print("Continue ",name) # Continue
             continue
@@ -91,8 +179,8 @@ def save_clip() :
             continue
         print(fullname)
         file_names.append(fullname)
-        
-    time_video = time_for_image * (len(file_names) + 1)    
+    
+    time_video = time_for_image * (len(file_names) + 1)   
     for name in file_names:
         clip = ImageClip(name).set_duration(time_for_image + 1)
         clip_w = clip.w # Clip width
@@ -100,17 +188,17 @@ def save_clip() :
         clip = clip.resize(height=H).set_start(time_start).crossfadein(IMAGE_CROSSFIDE)
         clip_list.append(clip)
         time_start += time_for_image
+    
     max_time = time_start
     
+    # Append text clips to the clip list
     if len(file_name_text)>0:
-        if os.path.isfile(file_name_text) :    
+        if os.path.isfile(file_name_text) :   
             time_start = 0 # Time video
             current_h = 0
             last_h = 0
             with open(file_name_text, 'r', encoding='utf8') as fp:
                 for line in fp:
-                    #if not line :
-                    #    continue
                     if ((current_h+last_h)>H) :
                         current_h = 0
                     print("current_h: {} Time: {} Text: {}".format(current_h, time_start,line.strip()))
@@ -119,27 +207,27 @@ def save_clip() :
                         .margin(right=8, top=8, opacity=0)
                         .set_pos((text_x,current_h))
                         .set_start(time_start)
-                        #.resize(lambda t: calc_resize(t))
-                        #.rotate(lambda t: calc_rotate(t,angle[cnt_angle]), resample = 'bilinear')
                         .crossfadein(0.5)
                         .crossfadeout(0.5)    )
-                         # (optional) logo-border padding.set_pos(("right","top")))
                     time_start += text_duration
                     last_h = clip_text.h
                     current_h += last_h
                     clip_list.append(clip_text)
-    # Add logo
+    
+    # Append logo clip to the clip list
     if text_logo:
         logo = (TextClip(txt=text_logo, color='white', align='West',fontsize=fontSizeLogo,font = 'Arial-Bold').set_duration(max_time).margin(right=8, top=8, opacity=0).set_pos(("right","top")))
-        # Создаем клип с наложенным логотипом
         clip_list.append(logo)
-    final_clip_f2 = CompositeVideoClip(clip_list, size=SIZE, bg_color = [255,255,255]).set_duration(max_time)         
-    # Сохранение клипа в файл
+    
+    # Create the final clip and save it to a file
+    final_clip_f2 = CompositeVideoClip(clip_list, size=SIZE, bg_color = [255,255,255]).set_duration(max_time)
+    
     if save_gif == True:
         final_clip_f2.write_gif(fnamemp4, fps=10)
     else:
         final_clip_f2.write_videofile(fnamemp4, preset = "veryslow",  ffmpeg_params = ffmpeg_params, fps=30, threads=4, audio = False)
-    if len(audio_file)>0:    
+    
+    if len(audio_file)>0:   
         fnamemp4Sound = fnamemp4.replace(".mp4","")+"_snd.mp4"
         myCmd = ffmpeg_cmd +' -y -i '+fnamemp4+' -i '+audio_file+' -codec copy -shortest '+fnamemp4Sound
         print(f"Execute: {myCmd}")
@@ -147,10 +235,21 @@ def save_clip() :
         
 
 def main() : 
+    """
+    Main function to execute the slideshow script.
+
+    This function sets the global variables based on the command line arguments,
+    checks the number of arguments, and calls the save_clip function to create 
+    and save the slideshow video.
+    """
     global dir_name, fnamemp4, text_logo, file_name_text, image_duration, text_duration, save_gif
+
+    # Check the number of arguments
     if len(sys.argv)<9:
         print("Error params")
         return
+
+    # Set the global variables based on the command line arguments
     dir_name = sys.argv[1]
     fnamemp4 = sys.argv[2]
     text_logo = sys.argv[3]
@@ -159,9 +258,13 @@ def main() :
     image_duration = int(sys.argv[7])
     text_duration = int(sys.argv[8])
     print("Argument:",len(sys.argv))
+
+    # Check if the optional argument is provided
     if (len(sys.argv)>9):
         if sys.argv[9] == "gif":
             save_gif = True
+
+    # Create and save the slideshow video
     save_clip()
   
 if __name__ == "__main__":

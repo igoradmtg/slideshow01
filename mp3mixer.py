@@ -12,15 +12,16 @@ def getLength(inputFile):
     result = subprocess.run(['ffprobe', '-v', 'error', '-show_entries', 'format=duration', '-of', 'default=noprint_wrappers=1:nokey=1', inputFile], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     return float(result.stdout)
     
-def mixingMp3Files(dirNameFiles, fileMp3, duration = 100):
+def mixingMp3Files(listDirNameFiles, fileMp3, duration = 100):
+    fileList = []
     if os.path.isfile(fileMp3):
         os.remove(fileMp3)
-    listDirs = os.listdir(dirNameFiles)
-    fileList = []
-    for dirFile in listDirs:
-        dirFileFull = os.path.join(dirNameFiles,dirFile) # Полное имя каталога
-        if os.path.isfile(dirFileFull):
-            fileList.append(dirFileFull)
+    for dirNameFiles in listDirNameFiles:   
+        listDirs = os.listdir(dirNameFiles)
+        for dirFile in listDirs:
+            dirFileFull = os.path.join(dirNameFiles,dirFile) # Полное имя каталога
+            if os.path.isfile(dirFileFull):
+                fileList.append(dirFileFull)
     randomNum = secrets.randbelow(len(fileList))        
     randomFile = fileList[randomNum]
     print(f"File random: {randomFile}")
